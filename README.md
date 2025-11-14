@@ -1,7 +1,7 @@
 # ISC.jl
 
 ## Description 
-A Julia package to analyse Intermeshed Steel Connections (ISCs)
+A Julia package to analyse Intermeshed Steel Connections (ISCs).
 
 ## Getting started 
 
