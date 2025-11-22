@@ -8,6 +8,6 @@ using Comodo.GeometryBasics
 
 # Export functions
 include("functions.jl")
-export iscdir, mesh_sideplate
+export iscdir, mesh_sideplate, mesh_flange, f1, f2
 
 end # module ISC

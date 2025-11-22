@@ -6,7 +6,7 @@ using Comodo.GLMakie
 B_SP    = 20.0
 TG      = 11.0        # to be linked
 TH      = 15.0        # to be linked
-TThc     = 6.0 
+TThc    = 6.0 
 g       = 0.5       # to be linked #gap on each
 tSP     = 6.0    
 mesh_spacing   = 4.5
