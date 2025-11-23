@@ -113,15 +113,14 @@ function mesh_sideplate(; B_SP=20.0, TG=11.0, TH=15.0, g = 0.5, TThc=6.0, tSP=6.
     return EN6, VN6
 end
 
-function mesh_flange(; r=1.0, g=1.0 ,TH=10.0,TD=11.5,TG=11.0, bFL=50.0, tFL=6.0, FL_B_L=30.0, nt_FL=2,searchTol=1e-6)
-    ### Derived Quantities
+function mesh_flange(; r =1.0, g =1.0 ,Gap = 1.0  ,TH = 10.0   ,TD =  11.5,TG =  11.0,bFL = 50.0  ,nt_FL =  3 ,L =  98.0 ,searchTol=  1e-6)  
+    ### DERIVED INPUTS
+    shiftDist   =       (TH + TG)
+    FL_B_L      =       L-(nt_FL *(shiftDist) + 0.5*TG - 0.5*Gap)
     beFL        =       bFL - 2 * TD            # Effective W.of FL
     nSections   =       nt_FL
-    shiftDist   = (TH + TG)
+    n = 5                                       # n=ceil(Int,((0.5*TH+r)/1.5))
 
-    # n           =       ceil(Int,((0.5*TH+r)/1.5))
-    n = 5
-    n_num1      =       n
     ### 1st LOFTING - EL 1 - HI to AB
     e1_h        =       0.5*TH+r
     e1_w        =       0.5*beFL-0.5*TH                                 
@@ -161,7 +160,7 @@ function mesh_flange(; r=1.0, g=1.0 ,TH=10.0,TD=11.5,TG=11.0, bFL=50.0, tFL=6.0,
     V4_S        =       filter(p -> isapprox(p[1], -e1_w-e1_h ,atol=searchTol), V2)
     V4_E        =       [Point{3, Float64}(v[1]-e4_w, v[2], v[3]) for v in V4_S]
     F4, V4      =       loftlinear(V4_E, V4_S; num_steps = n, close_loop = false, face_type = :quad)
-    ## Merging 1234
+    ### Merging 1234
     V1234       =       [V1; V2; V3; V4]
     F1234       =       [F1;
                         [f .+ length(V1) for f in F2];
@@ -170,7 +169,7 @@ function mesh_flange(; r=1.0, g=1.0 ,TH=10.0,TD=11.5,TG=11.0, bFL=50.0, tFL=6.0,
     F1234, V1234=       mergevertices(F1234, V1234)
     Eb1234      =       boundaryedges(F1234)                  
     V1234     .+=       Point{3, Float64}(0.0, +e3_h, 0.0)
-    ## Copy - 1 (Copy of basic element)
+    ### Copy - 1 (Copy of basic element)
     V_N1        =       [V1234;
                         [Point{3, Float64}(-v[1],  v[2], v[3]) for v in V1234];
                         [Point{3, Float64}( v[1], -v[2], v[3]) for v in V1234];
@@ -179,7 +178,7 @@ function mesh_flange(; r=1.0, g=1.0 ,TH=10.0,TD=11.5,TG=11.0, bFL=50.0, tFL=6.0,
                         [reverse(f)  .+    length(V1234)      for f in F1234];
                         [reverse(f)  .+    length(V1234)*2    for f in F1234];
                         [f           .+    length(V1234)*3    for f in F1234]]
-    ## Copy - nSections
+    ### Copy - nSections
     nf          =       length(F_N1)
     nv          =       length(V_N1)
     F_N1c       =       Vector{QuadFace{Int64}}(undef,nf*nSections)
@@ -190,12 +189,12 @@ function mesh_flange(; r=1.0, g=1.0 ,TH=10.0,TD=11.5,TG=11.0, bFL=50.0, tFL=6.0,
     for q in 1:nSections
         F_N1c[i_f:i_f+nf-1]  = [f.+s for f in F_N1]
         V_N1c[i_v: i_v+nv-1] = [Point{3, Float64}(v[1], v[2] - (q-1)*shiftDist, v[3]) for v in V_N1]
-        i_f += nf
-        i_v += nv
-        s   += nv
+        global i_f += nf
+        global i_v += nv
+        global s   += nv
     end
     F_N1c, V_N1c=      mergevertices(F_N1c, V_N1c)
-    ## Loft Top-Part 21 (Left)
+    ### Loft Top-Part 21 (Left)
     V_N21       =       [[Point{3, Float64}(v[1],  -v[2]  .+ shiftDist-0.5*TG+r, v[3]) for v in V1];
                         [Point{3, Float64}(v[1],   -v[2]  .+ shiftDist-0.5*TG+r, v[3]) for v in V2];
                         [Point{3, Float64}(v[1],   -v[2]  .+ shiftDist-0.5*TG+r, v[3]) for v in V4]]
@@ -204,7 +203,7 @@ function mesh_flange(; r=1.0, g=1.0 ,TH=10.0,TD=11.5,TG=11.0, bFL=50.0, tFL=6.0,
                         [reverse(f) .+ length(V1) for f in F2]; 
                         [reverse(f) .+ length(V1) .+ length(V2) for f in F4]]
     F_N21, V_N21=       mergevertices(F_N21, V_N21)
-    ## Loft Top-Part 22 (Left)
+    ### Loft Top-Part 22 (Left)
     y           =       0.5*TG - 0.5*g - r
     V_N22_S     =       filter(p -> isapprox(p[2], 0.5*TG + TH + r ,atol=searchTol), V_N21)
     indSort     =       reverse(sortperm([v[1] for v in V_N22_S]))
@@ -213,26 +212,26 @@ function mesh_flange(; r=1.0, g=1.0 ,TH=10.0,TD=11.5,TG=11.0, bFL=50.0, tFL=6.0,
     indSort     =       reverse(sortperm([v[1] for v in V_N22_S]))
     V_N22_E     =       V_N22_E[indSort]
     F_N22, V_N22=       loftlinear(V_N22_E, V_N22_S ; num_steps = 10, close_loop = false, face_type = :quad)
-    ## Loft Top-Part Merge 21 & 22
+    ### Loft Top-Part Merge 21 & 22
     V_N2122     =       [V_N21; V_N22]                    
     F_N2122     =       [F_N21;
                         [f .+ length(V_N21) for f in F_N22]]
     F_N2122, V_N2122 =  mergevertices(F_N2122, V_N2122)
     Eb_N2122    =       boundaryedges(F_N2122)        #??
-    ## Loft Top-Part Merge & Mirror 
+    ### Loft Top-Part Merge & Mirror 
     V_N2        =       [V_N2122;
                         [Point{3, Float64}(-v[1],  v[2], v[3]) for v in V_N2122]]     # top right    # bottom left
     F_N2        =       [F_N2122;
                         [reverse(f)  .+    length(V_N2122)     for f in F_N2122]]
     F_N2, V_N2  =       mergevertices(F_N2, V_N2)
     Eb_N2       =       boundaryedges(F_N2)
-    ## Loft Bottom-Part
+    ### Loft Bottom-Part
     V_N3_S      =       filter(p -> isapprox(p[2],-(nSections-0.5)*(TG+TH),atol=searchTol), V_N1c)
     indSort     =       reverse(sortperm([v[1] for v in V_N3_S]))
     V_N3_S      =       V_N3_S[indSort]
     V_N3_E      =       [Point{3, Float64}(v[1], -(FL_B_L-0.5*TH)+v[2] , v[3]) for v in V_N3_S]
     F_N3, V_N3  =       loftlinear(V_N3_S, V_N3_E; num_steps = n , close_loop = false, face_type = :quad)
-    ## Merge All
+    ### Merge All
     V           =       [V_N1c; V_N2; V_N3]
     F           =       [F_N1c;
                         [f .+ length(V_N1c) for f in F_N2];
@@ -243,7 +242,7 @@ function mesh_flange(; r=1.0, g=1.0 ,TH=10.0,TD=11.5,TG=11.0, bFL=50.0, tFL=6.0,
     nSmooth     =       5
     λ           =       0.5                                   # Smoothening parameter
     V           =       smoothmesh_laplacian(F, V, nSmooth, λ; constrained_points = indfix)
-    ## Extrude All
+    ### Extrude All
     Eh,Vh       =       extrudefaces(F, V; extent=tFL, direction=:positive, num_steps=3)
  return Eh,Vh
 end

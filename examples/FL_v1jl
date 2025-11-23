@@ -1,4 +1,4 @@
-using ISC
+# using ISC
 using Comodo
 using Comodo.GLMakie
 using Comodo.GeometryBasics
@@ -7,25 +7,26 @@ using Comodo.Rotations
 using Comodo.LinearAlgebra
 using Printf
 
+### This is a cleaned code, only FL, Abaqus will be created as a separate function.
 ### INPUT
 r           =       1.0                     # Corner Radii
-g           =       1.0                     # Tolerance
+g           =       1.0                     # Tolerance for Teeth
+Gap         =       1.0                     # Gap for FL - FL
 TH          =       10.0                    # Tooth Height      # at max    18      min ---
 TD          =       11.5                    # Tooth Depth       # at max    20      min ---
 TG          =       11.0                    # Tooth Gap         # at max    unl     min 11  
 bFL         =       50.0                    # Width of FL       # at max    unl     min 34 
 tFL         =       6.0                     # FL Thickness
-FL_B_L      =       30.0
-nt_FL       =       2                       
+nt_FL       =       3                       # no. of Teeth each side
+L           =       98.0                      # Length of the Part
 searchTol   =       1e-6 
-### Derived Quantities
+### DERIVED INPUTS
+shiftDist   =       (TH + TG)
+FL_B_L      =       L-(nt_FL *(shiftDist) + 0.5*TG - 0.5*Gap)
 beFL        =       bFL - 2 * TD            # Effective W.of FL
 nSections   =       nt_FL
-shiftDist   = (TH + TG)
+n = 5                                       # n=ceil(Int,((0.5*TH+r)/1.5))
 
-# n           =       ceil(Int,((0.5*TH+r)/1.5))
-n = 5
-n_num1      =       n
 ### 1st LOFTING - EL 1 - HI to AB
 e1_h        =       0.5*TH+r
 e1_w        =       0.5*beFL-0.5*TH                                 

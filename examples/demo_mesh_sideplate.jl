@@ -3,14 +3,14 @@ using Comodo
 using Comodo.GLMakie
 
 ## INPUTS
-B_SP    = 20.0
-TG      = 11.0        # to be linked
-TH      = 15.0        # to be linked
-TThc    = 6.0 
-g       = 0.5       # to be linked #gap on each
-tSP     = 6.0    
-mesh_spacing   = 4.5
-nSections      = 2                    # no. of teeth in each flange
+B_SP            = 20.0
+TG              = 11.0       
+TH              = 15.0        
+TThc            = 6.0 
+g               = 0.5                  # to be linked #gap on each
+tSP             = 6.0    
+mesh_spacing    = 4.5
+nSections       = 2                    # no. of teeth in each flange
 
 EN6, VN6 = mesh_sideplate(; B_SP=B_SP, TG=TG, TH=TH, g=g, TThc=TThc, tSP=tSP, mesh_spacing=mesh_spacing, nSections=nSections)    
 
