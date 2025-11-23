@@ -113,7 +113,7 @@ function mesh_sideplate(; B_SP=20.0, TG=11.0, TH=15.0, g = 0.5, TThc=6.0, tSP=6.
     return EN6, VN6
 end
 
-function mesh_flange(; r =1.0, g =1.0 ,Gap = 1.0  ,TH = 10.0   ,TD =  11.5,TG =  11.0,bFL = 50.0  ,nt_FL =  3 ,L =  98.0 ,searchTol=  1e-6)  
+function mesh_flange(; r =1.0, g =1.0 ,Gap = 1.0  ,TH = 10.0   ,TD =  11.5,TG =  11.0,bFL = 50.0, tFL = 6.0, nt_FL =  3 ,L =  98.0 ,searchTol=  1e-6)  
     ### DERIVED INPUTS
     shiftDist   =       (TH + TG)
     FL_B_L      =       L-(nt_FL *(shiftDist) + 0.5*TG - 0.5*Gap)
@@ -189,9 +189,9 @@ function mesh_flange(; r =1.0, g =1.0 ,Gap = 1.0  ,TH = 10.0   ,TD =  11.5,TG = 
     for q in 1:nSections
         F_N1c[i_f:i_f+nf-1]  = [f.+s for f in F_N1]
         V_N1c[i_v: i_v+nv-1] = [Point{3, Float64}(v[1], v[2] - (q-1)*shiftDist, v[3]) for v in V_N1]
-        global i_f += nf
-        global i_v += nv
-        global s   += nv
+        i_f += nf
+        i_v += nv
+        s   += nv
     end
     F_N1c, V_N1c=      mergevertices(F_N1c, V_N1c)
     ### Loft Top-Part 21 (Left)
