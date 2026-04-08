@@ -26,5 +26,5 @@ n = length(EN6)
 
 fig = Figure(size = (1200, 800))
 ax1 = AxisGeom(fig[1, 1], title="Side plate design and mesh, featuring $n elements")
-hp = meshplot!(ax1, FN6_Boundp, VN6p, strokewidth = linewidth)
+hp  = meshplot!(ax1, FN6_Boundp, VN6p, strokewidth = linewidth)
 fig
