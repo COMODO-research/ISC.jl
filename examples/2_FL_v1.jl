@@ -53,7 +53,7 @@ end
 Vb          =       [Vb1_E;Vb2_E]
 Vb          =       unique(Vb, dims=1)
 F2, V2      =       loftlinear(Vb, Vr; num_steps = 10, close_loop = false, face_type = :quad)
-### 3rd LOFTING - EL 3 - HX to AF
+### 3rd LOFTING - EL 3 - HX to GF
 e3_h        =       0.5*TG-r   
 V3_S1       =       filter(p -> isapprox(p[2], 0.0 ,atol=searchTol), V1)
 V3_S2       =       filter(p -> isapprox(p[2], 0.0 ,atol=searchTol), V2)

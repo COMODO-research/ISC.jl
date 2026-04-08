@@ -18,6 +18,14 @@ Creates mesh for sideplate
 # Description 
 fdasfasfjasfasfa f 
 """
+# function shift_elements(E, offset)
+#     [typeof(e)(ntuple(i -> e[i] + offset, length(Tuple(e)))...) for e in E]
+# end
+
+function shift_elements(E, offset)
+    [typeof(e)(ntuple(i -> Tuple(e)[i] + offset, length(Tuple(e)))) for e in E]
+end
+
 function mesh_sideplate(; B_SP=20.0, TG=11.0, TH=15.0, g = 0.5, TThc=6.0, tSP=6.0, mesh_spacing=4.5, nSections=2, searchTol = 1e-6)    
     # Hole_H  = 2.0*g + TH
     Hole_W  = 2.0*g + TThc 
