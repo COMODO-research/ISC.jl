@@ -5,9 +5,13 @@ authors = ["Kamran Ali Bhatti"]
 
 [deps]
 Comodo = "59095408-2761-4f7a-bdc2-044e78630271"
+DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
+Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
 
 [compat]
 Comodo = "1.0.3"
+DelimitedFiles = "1.9.1"
+Printf = "1.11.0"
 julia = "1.10.10"
 
 [extras]
